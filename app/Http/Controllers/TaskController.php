@@ -117,4 +117,92 @@ class TaskController extends Controller
             ], 500);
         }
     }
+
+    public function updateTask(Request $request, $id)
+    {
+        try {
+            $user_id = auth()->user()->id;
+            $task =  Task::query()
+                ->where('id', '=', $id)
+                ->where('user_id', '=', $user_id)
+                ->first();
+                if (!$task) {
+                    return [
+                        'success' => true,
+                        "message" => "These task doesn exist"
+                    ];
+                }
+
+            Log::info("Updating tasks");
+            $task = Task::find($id);
+            if (!$task) {
+                return response()->json([
+                    "success" => true,
+                    "message" => "Task doesnt exist"
+                ], 404);
+
+            }
+
+            $title = $request->input('title');
+
+            $task->title = $title;
+
+            $task->save();
+            return response()->json([
+                "success" => true,
+                "message" => "Task updated"
+            ], 200);
+
+        } catch (\Exception $exception) {
+
+            Log::error("Error updating tasks: " . $exception->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error updating task' . $exception->getMessage(),
+            ], 500);
+
+        }
+    }
+
+    public function deleteTask($id){
+        try {
+            
+            $user_id = auth()->user()->id;
+            $task =  Task::query()
+                ->where('id', '=', $id)
+                ->where('user_id', '=', $user_id)
+                ->first();
+                if (!$task) {
+                    return [
+                        'success' => true,
+                        "message" => "These task doesn exist"
+                    ];
+                }
+
+            Log::info("Deleting tasks");
+            $task = Task::find($id);
+            if (!$task) {
+                return response()->json([
+                    "success" => true,
+                    "message" => "Task doesnt exist"
+                ], 404);
+
+            }
+            $task::destroy($id);
+            return response()->json([
+                "success" => true,
+                "message" => "Task deleted"
+            ], 200);
+
+        } catch (\Exception $exception) {
+
+            Log::error("Error deleting tasks: " . $exception->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting task' . $exception->getMessage(),
+            ], 500);
+            
+        }
+
+    }
 }
