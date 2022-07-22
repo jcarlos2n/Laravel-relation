@@ -65,7 +65,14 @@ class TaskController extends Controller
         try {
 
             $user_id = auth()->user()->id;
-            $tasks =  Task::query()->where('user_id', $user_id)->get()->toArray();
+
+            // $tasks =  Task::query()
+            // ->where('user_id', $user_id)
+            // ->get()
+            // ->toArray();
+
+            $tasks = User::find($user_id)->tasks;
+
             Log::info("Getting all tasks");
             return response()->json([
                 'success' => true,
