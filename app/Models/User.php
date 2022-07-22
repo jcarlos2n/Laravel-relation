@@ -62,4 +62,8 @@ class User extends Authenticatable implements JWTSubject
         //relacion uno a muchos, un usuario podra crear muchas tareas.
         return $this->hasMany(Task::class);
     }
+
+    public function roles(){
+        return $this->belongsToMany(Role::class);
+    }
 }
