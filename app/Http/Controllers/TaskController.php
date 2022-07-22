@@ -212,4 +212,25 @@ class TaskController extends Controller
         }
 
     }
+
+    public function getUserByIdTask($id){
+        try {
+
+            $task = Task::query()->find($id);
+            $user = $task->user;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User retrieved',
+                'data' => $user
+            ],200);
+
+        } catch (\Exception $exception) {
+            Log::error("Error deleting tasks: " . $exception->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error deleting task' . $exception->getMessage(),
+            ], 500);
+        }
+    }
 }
